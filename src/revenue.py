@@ -1,22 +1,16 @@
-from library import make_api_request, read_json_file, write_json_file
+from library import make_api_request, read_json_file, write_json_file, get_environ
 from datetime import datetime, timezone
-from dotenv import load_dotenv
 import os
 
-# Wczytywanie zmiennych środowiskowych z pliku .env
-load_dotenv()
-
 def main():
-    url = os.environ.get('API_URL_BASE')
-    if not url:
-        print("Wartość nie został określona w pliku .env (zmienna 'API_URL_BASE').")
-        return
-
-    revenue_dir = os.environ.get('REVENUE_DIR')
-    if not revenue_dir:
-        print("Wartość nie został określona w pliku .env (zmienna 'REVENUE_DIR').")
-        return
-
+    # Pobieranie zmiennych
+    url = get_environ("API_URL_BASE")
+    if not url: return
+    data_dir = get_environ("DATA_DIR")
+    if not data_dir: return
+    revenue_dir = get_environ("REVENUE_DIR")
+    if not revenue_dir: return
+    
     # Aktualna data i czas UTC
     datetime_utc = datetime.now(timezone.utc)
     date_utc_string = datetime_utc.strftime('%Y-%m-%d')
@@ -24,12 +18,10 @@ def main():
 
     # Ścieżka pliku
     file_name = f"{date_utc_string}.json"
-    directory_path = os.path.join(revenue_dir)
-    file_path = os.path.join(directory_path, file_name)
-    
-    # Tworzenie katalogu, jeśli nie istnieje
-    os.makedirs(directory_path, exist_ok=True)
+    path = os.path.join(data_dir, revenue_dir)
+    file_path = os.path.join(path, file_name)
 
+    # Wysłanie zapytania
     data = make_api_request(url)
     if data is None:
         return
@@ -51,10 +43,13 @@ def main():
     }
     existing_data.append(new_data)
 
+    # Tworzenie katalogu, jeśli nie istnieje
+    os.makedirs(path, exist_ok=True)
+
     # Zapisywanie zaktualizowanych danych do pliku
     write_json_file(file_path, existing_data)
 
-    print(f"{datetime_utc_string} - Dane zapisane do pliku: {file_path}")
+    print(f"{datetime_utc_string}(UTC) - Dane zapisane do pliku: {file_path}")
 
 # Wykonanie funkcji
 if __name__ == "__main__":

@@ -4,6 +4,10 @@ import requests
 import json
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Wczytywanie zmiennych środowiskowych z pliku .env
+load_dotenv()
 
 def make_api_request(url):
     """Wysyła zapytanie GET do podanego URL i zwraca dane JSON."""
@@ -81,3 +85,13 @@ def load_data(file_path):
     else:
         print(f"Plik {file_path} nie istnieje.")
         return None
+    
+def get_environ(env_name):
+    """Wczytuje dane z pliku env."""
+    value = os.environ.get(env_name)
+    if not value:
+        print(f"Wartość nie został określona w pliku .env (zmienna '{env_name}').")
+        return None
+    
+    return value
+

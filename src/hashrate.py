@@ -1,35 +1,36 @@
-from library import make_api_request, read_json_file, write_json_file
+from library import make_api_request, read_json_file, write_json_file, get_environ
 from datetime import datetime, timezone
-from dotenv import load_dotenv
 import os
 
-# Wczytywanie zmiennych środowiskowych z pliku .env
-load_dotenv()
-
 def main():
-    url = os.environ.get('API_URL_WORKERS')
-    if not url:
-        print("Wartość nie został określona w pliku .env (zmienna 'API_URL_WORKERS').")
-        return
-
-    hashrate_dir = os.environ.get('HASHRATE_DIR')
-    if not hashrate_dir:
-        print("Wartość nie został określona w pliku .env (zmienna 'HASHRATE_DIR').")
-        return
+    # Pobieranie zmiennych
+    url = get_environ("API_URL_WORKERS")
+    if not url: return
+    data_dir = get_environ("DATA_DIR")
+    if not data_dir: return
+    hashrate_dir = get_environ("HASHRATE_DIR")
+    if not hashrate_dir: return
     
+    # ścieżka
+    path = os.path.join(data_dir, hashrate_dir)
+
+    # Aktualna data i czas UTC
+    datetime_utc = datetime.now(timezone.utc)
+    datetime_utc_string = datetime_utc.strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Wysłanie zapytania
     data = make_api_request(url)
     if data is None:
         return
     
     # Przechodzenie przez wszystkie urządzenia
     for worker in data['workers']:
-        # Ścieżka pliku na podstawie nazwy urządzenia
+        # Ścieżka pliku
         file_name = f"{worker['name']}.json"
-        directory_path = os.path.join(hashrate_dir)
-        file_path = os.path.join(directory_path, file_name)
+        file_path = os.path.join(path, file_name)
 
         # Tworzenie katalogu, jeśli nie istnieje
-        os.makedirs(directory_path, exist_ok=True)
+        os.makedirs(path, exist_ok=True)
         
         # Odczytywanie istniejących danych
         existing_data = read_json_file(file_path)
@@ -51,8 +52,8 @@ def main():
         
         # Zapisywanie zaktualizowanych danych do pliku
         write_json_file(file_path, existing_data)
-    
-    print("Dane zapisane/zaktualizowane w plikach JSON.")
+
+    print(f"{datetime_utc_string}(UTC) - Dane zapisane do pliku: {file_path}")
 
 # Wykonanie funkcji
 if __name__ == "__main__":
