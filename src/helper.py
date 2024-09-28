@@ -1,5 +1,3 @@
-# library.py
-
 import requests
 import json
 import os
@@ -95,3 +93,8 @@ def get_environ(env_name):
     
     return value
 
+def replace_placeholders(html_content, placeholders):
+    """Zamienia symbole zastępcze 'placeholders' na rzeczywiste dane"""
+    for key, value in placeholders.items():
+        html_content = html_content.replace(f'[[[{key}]]]', value)
+    return html_content

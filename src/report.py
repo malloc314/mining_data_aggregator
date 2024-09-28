@@ -1,23 +1,8 @@
-from library import get_json_files, parse_date_from_filename, compute_statistics, load_data, write_json_file, get_environ
+from helper import get_json_files, parse_date_from_filename, compute_statistics, load_data, write_json_file, get_environ
 from datetime import datetime, timezone
 import os
 
 def main():
-    # revenue_dir = os.environ.get('REVENUE_DIR')
-    # if not revenue_dir:
-    #     print("Wartość nie został określona w pliku .env (zmienna 'REVENUE_DIR').")
-    #     return
-
-    # report_dir = os.environ.get('REPORT_DIR')
-    # if not report_dir:
-    #     print("Wartość nie został określona w pliku .env (zmienna 'REPORT_DIR').")
-    #     return
-    
-    # base_dir = os.environ.get('BASE_DIR')
-    # if not base_dir:
-    #     print("Wartość nie został określona w pliku .env (zmienna 'BASE_DIR').")
-    #     return
-
     # Pobieranie zmiennych
     data_dir = get_environ("DATA_DIR")
     if not data_dir: return
@@ -64,9 +49,6 @@ def main():
     # Plik genesis (najwcześniejszy) i current (najpóźniejszy)
     genesis_date, genesis_file = dated_files[0]
     current_date, current_file = dated_files[-1]
-
-    # print(f"Plik genesis: {genesis_file} ({genesis_date.strftime('%Y-%m-%d')})")
-    # print(f"Plik current: {current_file} ({current_date.strftime('%Y-%m-%d')})")
 
     # Wczytywanie danych z plików
     genesis_data = load_data(os.path.join(revenue_path, genesis_file))
