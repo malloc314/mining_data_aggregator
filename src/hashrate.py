@@ -16,7 +16,7 @@ def main():
 
     # Aktualna data i czas UTC
     datetime_utc = datetime.now(timezone.utc)
-    datetime_utc_string = datetime_utc.strftime('%Y-%m-%d %H:%M:%S')
+    datetime_utc_string = datetime_utc.strftime("%Y-%m-%d %H:%M:%S")
     
     # Wysłanie zapytania
     data = make_api_request(url)
@@ -24,9 +24,9 @@ def main():
         return
     
     # Przechodzenie przez wszystkie urządzenia
-    for worker in data['workers']:
+    for worker in data["workers"]:
         # Ścieżka pliku
-        file_name = f"{worker['name']}.json"
+        file_name = f"{worker["name"]}.json"
         file_path = os.path.join(path, file_name)
 
         # Tworzenie katalogu, jeśli nie istnieje
@@ -36,7 +36,7 @@ def main():
         existing_data = read_json_file(file_path)
         
         # Konwersja timestampu na czytelną datę UTC
-        last_share_time_utc = datetime.fromtimestamp(worker["last_share_time"], timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+        last_share_time_utc = datetime.fromtimestamp(worker["last_share_time"], timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         
         # Dodawanie nowych danych
         new_data = {
