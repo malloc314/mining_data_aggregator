@@ -26,7 +26,7 @@ def main():
     # Przechodzenie przez wszystkie urządzenia
     for worker in data["workers"]:
         # Ścieżka pliku
-        file_name = f"{worker["name"]}.json"
+        file_name = f"{worker['name']}.json"
         file_path = os.path.join(path, file_name)
 
         # Tworzenie katalogu, jeśli nie istnieje
