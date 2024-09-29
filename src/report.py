@@ -11,23 +11,23 @@ def main():
     revenue_dir = get_environ("REVENUE_DIR")
     if not revenue_dir: return
 
-    #Ścieżki
+    # Ścieżki
     report_path = os.path.join(data_dir, report_dir)
     revenue_path = os.path.join(data_dir, revenue_dir)
 
     # Aktualna data i czas UTC
     datetime_utc = datetime.now(timezone.utc)
-    datetime_utc_string = datetime_utc.strftime('%Y-%m-%d %H:%M:%S')
+    datetime_utc_string = datetime_utc.strftime("%Y-%m-%d %H:%M:%S")
     
     # Sprawdzenie, czy katalog z danymi istnieje
     if not os.path.isdir(revenue_path):
-        print(f"Katalog '{revenue_path}' nie istnieje.")
+        print(f"Katalog {revenue_path} nie istnieje")
         return
 
     # Pobranie listy plików JSON
     json_files = get_json_files(revenue_path)
     if not json_files:
-        print(f"Brak plików JSON w katalogu '{revenue_path}'.")
+        print(f"Brak plików JSON w katalogu {revenue_path}")
         return
 
     # Parsowanie dat z nazw plików i filtrowanie poprawnych
@@ -40,7 +40,7 @@ def main():
             print(f"Pomijanie pliku z niepoprawnym formatem daty: {file}")
 
     if not dated_files:
-        print("Nie znaleziono żadnych plików z poprawnym formatem daty.")
+        print("Nie znaleziono żadnych plików z poprawnym formatem daty")
         return
 
     # Sortowanie plików według daty
@@ -55,7 +55,7 @@ def main():
     current_data = load_data(os.path.join(revenue_path, current_file))
 
     if genesis_data is None or current_data is None:
-        print("Nie można wczytać danych z plików. Przerywam działanie skryptu.")
+        print("Nie można wczytać danych z plików. Przerywam działanie skryptu")
         return
     
     # Obliczanie statystyk
@@ -63,19 +63,19 @@ def main():
     current_min, current_max, current_avg = compute_statistics(current_data)
 
     if None in [genesis_min, genesis_max, genesis_avg, current_min, current_max, current_avg]:
-        print("Błąd w obliczaniu statystyk. Upewnij się, że dane są poprawne.")
+        print("Błąd w obliczaniu statystyk. Upewnij się, że dane są poprawne")
         return
 
     # Przygotowanie danych do raportu
     report_data = {
         "genesis": {
-            "date": genesis_date.strftime('%Y-%m-%d'),
+            "date": genesis_date.strftime("%Y-%m-%d"),
             "min_revenue60m": genesis_min,
             "max_revenue60m": genesis_max,
             "avg_revenue60m": genesis_avg
         },
         "current": {
-            "date": current_date.strftime('%Y-%m-%d'),
+            "date": current_date.strftime("%Y-%m-%d"),
             "min_revenue60m": current_min,
             "max_revenue60m": current_max,
             "avg_revenue60m": current_avg
@@ -83,7 +83,7 @@ def main():
     }
 
     # Ścieżka do pliku raportu
-    file_name = f"{current_date.strftime('%Y-%m-%d')}.json"
+    file_name = f"{current_date.strftime("%Y-%m-%d")}.json"
     file_path = os.path.join(report_path, file_name)
 
     # Tworzenie katalogu na raport, jeśli nie istnieje

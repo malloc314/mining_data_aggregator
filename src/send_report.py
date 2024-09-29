@@ -24,34 +24,34 @@ def main():
     smtp_password = get_environ("SMTP_PASSWORD")
     if not smtp_password: return
     msg_subject = get_environ("MSG_SUBJECT")
-    if not msg_subject: msg_subject = 'This is subject'
+    if not msg_subject: msg_subject = "This is subject"
     msg_organization = get_environ("MSG_ORGANIZATION")
-    if not msg_organization: msg_organization = 'This is organization'
+    if not msg_organization: msg_organization = "This is organization"
     from_email = get_environ("FROM_EMAIL")
     if not from_email: return
     to_emails = get_environ("TO_EMAILS")
     if not to_emails: return
 
     # Parsowanie listy adresów email
-    to_emails = [email.strip() for email in to_emails.split(',')]
+    to_emails = [email.strip() for email in to_emails.split(",")]
 
     # Aktualna data i czas UTC
     datetime_utc = datetime.now(timezone.utc)
-    date_utc_string = datetime_utc.strftime('%Y-%m-%d')
-    datetime_utc_string = datetime_utc.strftime('%Y-%m-%d %H:%M:%S')
+    date_utc_string = datetime_utc.strftime("%Y-%m-%d")
+    datetime_utc_string = datetime_utc.strftime("%Y-%m-%d %H:%M:%S")
 
     # Tworzenie wiadomości
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = msg_subject
-    msg['From'] = from_email
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = msg_subject
+    msg["From"] = from_email
 
     # Odczytywanie szablonu HTML z pliku
     template_file_path = os.path.join(template_dir, template_file_name)
     try:
-        with open(template_file_path, 'r', encoding='utf-8') as file:
+        with open(template_file_path, "r", encoding="utf-8") as file:
             html_template = file.read()
     except Exception as e:
-        print(f'Wystąpił błąd podczas wczytywania szablonu HTML: {e}')
+        print(f"Wystąpił błąd podczas wczytywania szablonu HTML: {e}")
         return
     
     # Odczytywanie istniejących danych
@@ -60,13 +60,17 @@ def main():
     report_file_path = os.path.join(report_path, report_file_name)
     report_data = read_json_file(report_file_path)
 
+    if not report_data:
+        print(f"Brak raportu z dnia {date_utc_string}")
+        return
+
     # Pobieranie danych z raportu
-    min_revenue_genesis = report_data['genesis']['min_revenue60m']
-    max_revenue_genesis = report_data['genesis']['max_revenue60m']
-    avg_revenue_genesis = report_data['genesis']['avg_revenue60m']
-    min_revenue_current = report_data['current']['min_revenue60m']
-    max_revenue_current = report_data['current']['max_revenue60m']
-    avg_revenue_current = report_data['current']['avg_revenue60m']
+    min_revenue_genesis = report_data["genesis"]["min_revenue60m"]
+    max_revenue_genesis = report_data["genesis"]["max_revenue60m"]
+    avg_revenue_genesis = report_data["genesis"]["avg_revenue60m"]
+    min_revenue_current = report_data["current"]["min_revenue60m"]
+    max_revenue_current = report_data["current"]["max_revenue60m"]
+    avg_revenue_current = report_data["current"]["avg_revenue60m"]
     
     # Obliczenie procentowej zmiany
     def calculate_percentage_change(current, genesis):
@@ -84,7 +88,7 @@ def main():
     max_revenue_percent = round(max_revenue_percent, 2)
     avg_revenue_percent = round(avg_revenue_percent, 2)
 
-    # Ustawienie koloru tła 'Badge'
+    # Ustawienie koloru tła "Badge"
     # #70C7BA if revenue_percent > 0
     # #c76f6f if revenue_percent < 0
     # #c7c7c7 if revenue_percent == 0
@@ -98,24 +102,24 @@ def main():
     
     # Przygotowanie danych do zastąpienia
     placeholders = {
-        'DATE-TIME-NOW': str(date_utc_string),
-        'ORGANIZATION': str(msg_organization),
-        'MIN-REVENUE': str(min_revenue_current),
-        'MIN-REVENUE-PERCENT': str(min_revenue_percent),
-        'MIN-BG-COLOR': set_bg_color(min_revenue_percent),
-        'MAX-REVENUE': str(max_revenue_current),
-        'MAX-REVENUE-PERCENT': str(max_revenue_percent),
-        'MAX-BG-COLOR': set_bg_color(max_revenue_percent),
-        'AVG-REVENUE': str(avg_revenue_current),
-        'AVG-REVENUE-PERCENT': str(avg_revenue_percent),
-        'AVG-BG-COLOR': set_bg_color(avg_revenue_percent)
+        "DATE-TIME-NOW": str(date_utc_string),
+        "ORGANIZATION": str(msg_organization),
+        "MIN-REVENUE": str(min_revenue_current),
+        "MIN-REVENUE-PERCENT": str(min_revenue_percent),
+        "MIN-BG-COLOR": set_bg_color(min_revenue_percent),
+        "MAX-REVENUE": str(max_revenue_current),
+        "MAX-REVENUE-PERCENT": str(max_revenue_percent),
+        "MAX-BG-COLOR": set_bg_color(max_revenue_percent),
+        "AVG-REVENUE": str(avg_revenue_current),
+        "AVG-REVENUE-PERCENT": str(avg_revenue_percent),
+        "AVG-BG-COLOR": set_bg_color(avg_revenue_percent)
     }
 
     # Treść wiadomości w HTML
     html_content = replace_placeholders(html_template, placeholders)
 
     # Dodawanie treści do wiadomości
-    html_part = MIMEText(html_content, 'html')
+    html_part = MIMEText(html_content, "html")
     msg.attach(html_part)
 
     # Inicjalizacja połączenia SMTP
@@ -124,20 +128,20 @@ def main():
         server.starttls()  # Inicjowanie szyfrowania TLS
         server.login(smtp_username, smtp_password)
     except Exception as e:
-        print(f'Wystąpił błąd podczas łączenia z serwerem SMTP: {e}')
+        print(f"Wystąpił błąd podczas łączenia z serwerem SMTP: {e}")
         return
 
     # Wysyłanie wiadomości do każdego odbiorcy
     for to_email in to_emails:
         try:
-            # Aktualizacja pola 'To'
-            msg['To'] = to_email
+            # Aktualizacja pola "To"
+            msg["To"] = to_email
 
             # Wysłanie wiadomości
             server.sendmail(from_email, to_email, msg.as_string())
-            print(f'{datetime_utc_string}(UTC) - Wiadomość została wysłana do {to_email}.')
+            print(f"{datetime_utc_string}(UTC) - Wiadomość została wysłana do {to_email}")
         except Exception as e:
-            print(f'{datetime_utc_string}(UTC) - Wystąpił błąd podczas wysyłania do {to_email}: {e}')
+            print(f"{datetime_utc_string}(UTC) - Wystąpił błąd podczas wysyłania do {to_email}: {e}")
 
     # Zamknięcie połączenia SMTP
     server.quit()

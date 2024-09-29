@@ -13,8 +13,8 @@ def main():
     
     # Aktualna data i czas UTC
     datetime_utc = datetime.now(timezone.utc)
-    date_utc_string = datetime_utc.strftime('%Y-%m-%d')
-    datetime_utc_string = datetime_utc.strftime('%Y-%m-%d %H:%M:%S')
+    date_utc_string = datetime_utc.strftime("%Y-%m-%d")
+    datetime_utc_string = datetime_utc.strftime("%Y-%m-%d %H:%M:%S")
 
     # Ścieżka pliku
     file_name = f"{date_utc_string}.json"
@@ -28,9 +28,9 @@ def main():
     
     # Nagroda za 1h
     try:
-        revenue60m = data['revenue']['revenue60m']
+        revenue60m = data["revenue"]["revenue60m"]
     except KeyError:
-        print("Nie można znaleźć 'revenue60m' w danych API.")
+        print("Nie można znaleźć revenue60m w danych API.")
         return
 
     # Odczytywanie istniejących danych
