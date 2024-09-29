@@ -77,7 +77,7 @@ def main():
         if genesis != 0:
             return ((current - genesis) / genesis) * 100
         else:
-            return None  # lub 0, w zależności od potrzeb
+            return 0
 
     min_revenue_percent = calculate_percentage_change(min_revenue_current, min_revenue_genesis)
     max_revenue_percent = calculate_percentage_change(max_revenue_current, max_revenue_genesis)
