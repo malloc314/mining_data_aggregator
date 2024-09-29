@@ -51,7 +51,7 @@ def main():
         with open(template_file_path, "r", encoding="utf-8") as file:
             html_template = file.read()
     except Exception as e:
-        print(f"Wystąpił błąd podczas wczytywania szablonu HTML: {e}")
+        print(f"{datetime_utc_string}(UTC) - Wystąpił błąd podczas wczytywania szablonu HTML: {e}")
         return
     
     # Odczytywanie istniejących danych
@@ -61,7 +61,7 @@ def main():
     report_data = read_json_file(report_file_path)
 
     if not report_data:
-        print(f"Brak raportu z dnia {date_utc_string}")
+        print(f"{datetime_utc_string}(UTC) - Brak raportu z dnia {date_utc_string}")
         return
 
     # Pobieranie danych z raportu
@@ -128,7 +128,7 @@ def main():
         server.starttls()  # Inicjowanie szyfrowania TLS
         server.login(smtp_username, smtp_password)
     except Exception as e:
-        print(f"Wystąpił błąd podczas łączenia z serwerem SMTP: {e}")
+        print(f"{datetime_utc_string}(UTC) - Wystąpił błąd podczas łączenia z serwerem SMTP: {e}")
         return
 
     # Wysyłanie wiadomości do każdego odbiorcy

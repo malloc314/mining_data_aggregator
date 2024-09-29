@@ -30,7 +30,7 @@ def main():
     try:
         revenue60m = data["revenue"]["revenue60m"]
     except KeyError:
-        print("Nie można znaleźć revenue60m w danych API.")
+        print(f"{datetime_utc_string}(UTC) - Nie można znaleźć revenue60m w danych API.")
         return
 
     # Odczytywanie istniejących danych

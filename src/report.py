@@ -21,13 +21,13 @@ def main():
     
     # Sprawdzenie, czy katalog z danymi istnieje
     if not os.path.isdir(revenue_path):
-        print(f"Katalog {revenue_path} nie istnieje")
+        print(f"{datetime_utc_string}(UTC) - Katalog {revenue_path} nie istnieje")
         return
 
     # Pobranie listy plików JSON
     json_files = get_json_files(revenue_path)
     if not json_files:
-        print(f"Brak plików JSON w katalogu {revenue_path}")
+        print(f"{datetime_utc_string}(UTC) - Brak plików JSON w katalogu {revenue_path}")
         return
 
     # Parsowanie dat z nazw plików i filtrowanie poprawnych
@@ -37,10 +37,10 @@ def main():
         if file_date:
             dated_files.append((file_date, file))
         else:
-            print(f"Pomijanie pliku z niepoprawnym formatem daty: {file}")
+            print(f"{datetime_utc_string}(UTC) - Pomijanie pliku z niepoprawnym formatem daty: {file}")
 
     if not dated_files:
-        print("Nie znaleziono żadnych plików z poprawnym formatem daty")
+        print(f"{datetime_utc_string}(UTC) - Nie znaleziono żadnych plików z poprawnym formatem daty")
         return
 
     # Sortowanie plików według daty
@@ -58,7 +58,7 @@ def main():
     current_data = load_data(os.path.join(revenue_path, current_file))
 
     if genesis_data is None or current_data is None:
-        print("Nie można wczytać danych z plików. Przerywam działanie skryptu")
+        print(f"{datetime_utc_string}(UTC) - Nie można wczytać danych z plików. Przerywam działanie skryptu")
         return
     
     # Obliczanie statystyk
@@ -66,7 +66,7 @@ def main():
     current_min, current_max, current_avg = compute_statistics(current_data)
 
     if None in [genesis_min, genesis_max, genesis_avg, current_min, current_max, current_avg]:
-        print("Błąd w obliczaniu statystyk. Upewnij się, że dane są poprawne")
+        print(f"{datetime_utc_string}(UTC) - Błąd w obliczaniu statystyk. Upewnij się, że dane są poprawne")
         return
 
     # Przygotowanie danych do raportu
