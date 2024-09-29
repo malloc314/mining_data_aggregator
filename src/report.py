@@ -50,6 +50,9 @@ def main():
     genesis_date, genesis_file = dated_files[0]
     current_date, current_file = dated_files[-1]
 
+    genesis_date_str = genesis_date.strftime("%Y-%m-%d")
+    current_date_str = current_date.strftime("%Y-%m-%d")
+
     # Wczytywanie danych z plików
     genesis_data = load_data(os.path.join(revenue_path, genesis_file))
     current_data = load_data(os.path.join(revenue_path, current_file))
@@ -69,13 +72,13 @@ def main():
     # Przygotowanie danych do raportu
     report_data = {
         "genesis": {
-            "date": genesis_date.strftime("%Y-%m-%d"),
+            "date": genesis_date_str,
             "min_revenue60m": genesis_min,
             "max_revenue60m": genesis_max,
             "avg_revenue60m": genesis_avg
         },
         "current": {
-            "date": current_date.strftime("%Y-%m-%d"),
+            "date": current_date_str,
             "min_revenue60m": current_min,
             "max_revenue60m": current_max,
             "avg_revenue60m": current_avg
@@ -83,7 +86,7 @@ def main():
     }
 
     # Ścieżka do pliku raportu
-    file_name = f"{current_date.strftime("%Y-%m-%d")}.json"
+    file_name = f"{current_date_str}.json"
     file_path = os.path.join(report_path, file_name)
 
     # Tworzenie katalogu na raport, jeśli nie istnieje
