@@ -100,19 +100,40 @@ def main():
         elif revenue_percent == 0:
             return "#c7c7c7"
     
+    # Ustawienie encji HTML "<", ">", "="
+    # &gt; if revenue_percent > 0
+    # &lt; if revenue_percent < 0
+    # &equals; if revenue_percent == 0
+    def set_html_entity(revenue_percent):
+        if revenue_percent > 0:
+            return "&gt;"
+        elif revenue_percent < 0:
+            return "&lt;"
+        elif revenue_percent == 0:
+            return "&equals;"
+
     # Przygotowanie danych do zastąpienia
     placeholders = {
         "DATE-TIME-NOW": str(date_utc_string),
         "ORGANIZATION": str(msg_organization),
-        "MIN-REVENUE": str(min_revenue_current),
+        # MIN
+        "MIN-REVENUE-HISTORY": str(min_revenue_history),
+        "MIN-REVENUE-CURRENT": str(min_revenue_current),
         "MIN-REVENUE-PERCENT": str(min_revenue_percent),
         "MIN-BG-COLOR": set_bg_color(min_revenue_percent),
-        "MAX-REVENUE": str(max_revenue_current),
+        "MIN-HTML-ENTITY": set_html_entity(min_revenue_percent),
+        # MAX
+        "MAX-REVENUE-HISTORY": str(max_revenue_history),
+        "MAX-REVENUE-CURRENT": str(max_revenue_current),
         "MAX-REVENUE-PERCENT": str(max_revenue_percent),
         "MAX-BG-COLOR": set_bg_color(max_revenue_percent),
-        "AVG-REVENUE": str(avg_revenue_current),
+        "MAX-HTML-ENTITY": set_html_entity(max_revenue_percent),
+        # AVG
+        "AVG-REVENUE-HISTORY": str(avg_revenue_history),
+        "AVG-REVENUE-CURRENT": str(avg_revenue_current),
         "AVG-REVENUE-PERCENT": str(avg_revenue_percent),
-        "AVG-BG-COLOR": set_bg_color(avg_revenue_percent)
+        "AVG-BG-COLOR": set_bg_color(avg_revenue_percent),
+        "AVG-HTML-ENTITY": set_html_entity(avg_revenue_percent)
     }
 
     # Treść wiadomości w HTML
