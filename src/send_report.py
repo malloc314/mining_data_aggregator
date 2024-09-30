@@ -129,8 +129,8 @@ def main():
         "MAX-BG-COLOR": set_bg_color(max_revenue_percent),
         "MAX-HTML-ENTITY": set_html_entity(max_revenue_percent),
         # AVG
-        "AVG-REVENUE-HISTORY": str(avg_revenue_history),
-        "AVG-REVENUE-CURRENT": str(avg_revenue_current),
+        "AVG-REVENUE-HISTORY": str(round(avg_revenue_history, 8)),
+        "AVG-REVENUE-CURRENT": str(round(avg_revenue_current, 8)),
         "AVG-REVENUE-PERCENT": str(avg_revenue_percent),
         "AVG-BG-COLOR": set_bg_color(avg_revenue_percent),
         "AVG-HTML-ENTITY": set_html_entity(avg_revenue_percent)
