@@ -65,8 +65,6 @@ def main():
     if not combined_data:
         print(f"{datetime_utc_string}(UTC) - Brak danych w plikach historycznych")
         return
-    
-    print(combined_data)
 
     # Obliczanie statystyk dla danych historycznych
     other_min, other_max, other_avg = compute_statistics(combined_data)
