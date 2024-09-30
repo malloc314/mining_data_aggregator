@@ -65,23 +65,23 @@ def main():
         return
 
     # Pobieranie danych z raportu
-    min_revenue_genesis = report_data["genesis"]["min_revenue60m"]
-    max_revenue_genesis = report_data["genesis"]["max_revenue60m"]
-    avg_revenue_genesis = report_data["genesis"]["avg_revenue60m"]
+    min_revenue_history = report_data["history"]["min_revenue60m"]
+    max_revenue_history = report_data["history"]["max_revenue60m"]
+    avg_revenue_history = report_data["history"]["avg_revenue60m"]
     min_revenue_current = report_data["current"]["min_revenue60m"]
     max_revenue_current = report_data["current"]["max_revenue60m"]
     avg_revenue_current = report_data["current"]["avg_revenue60m"]
     
     # Obliczenie procentowej zmiany
-    def calculate_percentage_change(current, genesis):
-        if genesis != 0:
-            return ((current - genesis) / genesis) * 100
+    def calculate_percentage_change(current, history):
+        if history != 0:
+            return ((current - history) / history) * 100
         else:
             return 0
 
-    min_revenue_percent = calculate_percentage_change(min_revenue_current, min_revenue_genesis)
-    max_revenue_percent = calculate_percentage_change(max_revenue_current, max_revenue_genesis)
-    avg_revenue_percent = calculate_percentage_change(avg_revenue_current, avg_revenue_genesis)
+    min_revenue_percent = calculate_percentage_change(min_revenue_current, min_revenue_history)
+    max_revenue_percent = calculate_percentage_change(max_revenue_current, max_revenue_history)
+    avg_revenue_percent = calculate_percentage_change(avg_revenue_current, avg_revenue_history)
 
     # Zaokrąglanie wyników do dwóch miejsc po przecinku
     min_revenue_percent = round(min_revenue_percent, 2)
