@@ -134,31 +134,34 @@ def get_revenue60m_data(data_dir, report_dir):
         print(f"{datetime_utc_string}(UTC) - Brak raportu z dnia {date_utc_string}")
         return
     
-    def calculate_percentage_change(current, history):
-        if history != 0:
-            return ((current - history) / history) * 100
-        else:
-            return 0
+    # Pobieranie danych archiwalnych z raportu
+    start_date_archival = report_data["archival"]["start_date"]
+    end_date_archival = report_data["archival"]["end_date"]
+    min_revenue_archival = report_data["archival"]["min_revenue60m"]
+    max_revenue_archival = report_data["archival"]["max_revenue60m"]
+    avg_revenue_archival = report_data["archival"]["avg_revenue60m"]
     
-    # Pobieranie danych z raportu
-    min_revenue_history = report_data["history"]["min_revenue60m"]
-    max_revenue_history = report_data["history"]["max_revenue60m"]
-    avg_revenue_history = report_data["history"]["avg_revenue60m"]
+    # Pobieranie danych bieżących z raportu
+    start_date_current = report_data["current"]["start_date"]
+    end_date_current = report_data["current"]["end_date"]
     min_revenue_current = report_data["current"]["min_revenue60m"]
     max_revenue_current = report_data["current"]["max_revenue60m"]
     avg_revenue_current = report_data["current"]["avg_revenue60m"]
 
-    # Obliczenie procentowej zmiany
-    min_revenue_percent = calculate_percentage_change(min_revenue_current, min_revenue_history)
-    max_revenue_percent = calculate_percentage_change(max_revenue_current, max_revenue_history)
-    avg_revenue_percent = calculate_percentage_change(avg_revenue_current, avg_revenue_history)
+    # Pobieranie danych procentowych z raportu
+    min_revenue_percent = report_data["percentage_change"]["min_percent"]
+    max_revenue_percent = report_data["percentage_change"]["max_percent"]
+    avg_revenue_percent = report_data["percentage_change"]["avg_percent"]
 
     # Zaokrąglanie wyników do dwóch miejsc po przecinku
     min_revenue_percent = round(min_revenue_percent, 2)
     max_revenue_percent = round(max_revenue_percent, 2)
     avg_revenue_percent = round(avg_revenue_percent, 2)
 
-    return (min_revenue_history, max_revenue_history, avg_revenue_history, min_revenue_current, max_revenue_current, avg_revenue_current, min_revenue_percent, max_revenue_percent, avg_revenue_percent)
+    return (
+        start_date_archival, end_date_archival, min_revenue_archival, max_revenue_archival, avg_revenue_archival, 
+        start_date_current, end_date_current, min_revenue_current, max_revenue_current, avg_revenue_current, 
+        min_revenue_percent, max_revenue_percent, avg_revenue_percent)
 
 def set_bg_color(revenue_percent):
     """

@@ -1,7 +1,6 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from datetime import datetime, timezone
 from helper import get_environ, replace_placeholders, get_html_template, get_revenue60m_data, set_bg_color, set_html_entity, get_datetime_utc
 
 def main():
@@ -22,8 +21,6 @@ def main():
     if not smtp_username: return
     smtp_password = get_environ("SMTP_PASSWORD")
     if not smtp_password: return
-    msg_subject = get_environ("MSG_SUBJECT")
-    if not msg_subject: msg_subject = "This is subject"
     msg_organization = get_environ("MSG_ORGANIZATION")
     if not msg_organization: msg_organization = "This is organization"
     from_email = get_environ("FROM_EMAIL")
@@ -39,17 +36,17 @@ def main():
 
     # Tworzenie wiadomości
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = msg_subject
+    msg["Subject"] = f"Raport finansowy - {msg_organization}"
     msg["From"] = from_email
 
     # Odczytywanie szablonu HTML z pliku
     html_template = get_html_template(template_dir, template_file_name)
     if not html_template: return
 
-    # Odczytywanie szablonu HTML z pliku
+    # Odczytywanie danych z raportu
     (
-        min_revenue_history, max_revenue_history, avg_revenue_history, 
-        min_revenue_current, max_revenue_current, avg_revenue_current, 
+        start_date_archival, end_date_archival, min_revenue_archival, max_revenue_archival, avg_revenue_archival, 
+        start_date_current, end_date_current, min_revenue_current, max_revenue_current, avg_revenue_current, 
         min_revenue_percent, max_revenue_percent, avg_revenue_percent
     ) = get_revenue60m_data(data_dir, report_dir)
 
@@ -57,22 +54,26 @@ def main():
     placeholders = {
         "DATE-TIME-NOW": str(date_utc_string),
         "ORGANIZATION": str(msg_organization),
-        "SUBJECT": str(msg_subject),
+        "SUBJECT": "Raport finansowy",
+        "START_DATE_ARCHIVAL": start_date_archival,
+        "END_DATE_ARCHIVAL": end_date_archival,
+        "START_DATE_CURRENT": start_date_current,
+        "END_DATE_CURRENT": end_date_current,
         # MIN
-        "MIN-REVENUE-HISTORY": str(min_revenue_history),
+        "MIN-REVENUE-ARCHIVAL": str(min_revenue_archival),
         "MIN-REVENUE-CURRENT": str(min_revenue_current),
         "MIN-REVENUE-PERCENT": str(min_revenue_percent),
         "MIN-BG-COLOR": set_bg_color(min_revenue_percent),
         "MIN-HTML-ENTITY": set_html_entity(min_revenue_percent),
         # MAX
-        "MAX-REVENUE-HISTORY": str(max_revenue_history),
+        "MAX-REVENUE-ARCHIVAL": str(max_revenue_archival),
         "MAX-REVENUE-CURRENT": str(max_revenue_current),
         "MAX-REVENUE-PERCENT": str(max_revenue_percent),
         "MAX-BG-COLOR": set_bg_color(max_revenue_percent),
         "MAX-HTML-ENTITY": set_html_entity(max_revenue_percent),
         # AVG
-        "AVG-REVENUE-HISTORY": str(round(avg_revenue_history, 8)),
-        "AVG-REVENUE-CURRENT": str(round(avg_revenue_current, 8)),
+        "AVG-REVENUE-ARCHIVAL": str(avg_revenue_archival),
+        "AVG-REVENUE-CURRENT": str(avg_revenue_current),
         "AVG-REVENUE-PERCENT": str(avg_revenue_percent),
         "AVG-BG-COLOR": set_bg_color(avg_revenue_percent),
         "AVG-HTML-ENTITY": set_html_entity(avg_revenue_percent)

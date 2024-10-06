@@ -1,4 +1,4 @@
-from helper import make_api_request, read_json_file, write_json_file, get_environ
+from helper import make_api_request, read_json_file, write_json_file, get_environ, get_datetime_utc
 from datetime import datetime, timezone
 import os
 
@@ -12,9 +12,7 @@ def main():
     if not revenue_dir: return
     
     # Aktualna data i czas UTC
-    datetime_utc = datetime.now(timezone.utc)
-    date_utc_string = datetime_utc.strftime("%Y-%m-%d")
-    datetime_utc_string = datetime_utc.strftime("%Y-%m-%d %H:%M:%S")
+    datetime_utc, date_utc_string, datetime_utc_string = get_datetime_utc()
 
     # Ścieżka pliku
     file_name = f"{date_utc_string}.json"
